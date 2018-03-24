@@ -37,14 +37,14 @@ router.get('/', (req, res) => {
  send user matching the id
  GET /api/users/(userId)
  {
-  id: String
-  username/author: String
+  _id: String
+  username: String
   email: String
   avatar_url: String
  }
  */
-router.get('/:id', (req, res) => {
-  const userId = req.params.id
+router.get('/:userId', (req, res) => {
+  const userId = req.params.userId
   User.find({'_id': userId}).exec().then(docs => {
     res.status(200).json(docs)
   }).catch(err => {
@@ -56,11 +56,11 @@ router.get('/:id', (req, res) => {
 })
 
 /*
- send user info for the name in the url
+ send user(s) data for the name in the url
  GET /api/users/find/(username)
  {
   _id: String
-  username/author: String
+  username: String
   email: String
   avatar_url: String
  }
@@ -92,30 +92,38 @@ router.get('/find/:username', (req, res) => {
  }
  */
 router.post('/signup', (req, res) => {
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
-    if (err) {
-      return res.status(500).json({
-        message: 'No password entered',
-        error: err
+  User.find({email: req.body.email}).exec().then(user => {
+    if (user) {
+      return res.status(409).json({
+        message: 'Email already used'
+      })
+    } else {
+      bcrypt.hash(req.body.password, 10, (err, hash) => {
+        if (err) {
+          return res.status(500).json({
+            message: 'No password entered',
+            error: err
+          })
+        }
+        const newUser = new User({
+          _id: new mongoose.Types.ObjectId(),
+          username: req.body.username,
+          email: req.body.email,
+          password: hash
+        })
+        newUser.save().then(result => {
+          res.status(201).json({
+            message: 'User created',
+            createdUser: result
+          })
+        }).catch(err => {
+          res.status(500).json({
+            message: 'Signup failed',
+            error: err
+          })
+        })
       })
     }
-    const newUser = new User({
-      _id: new mongoose.Types.ObjectId(),
-      username: req.body.username,
-      email: req.body.email,
-      password: hash
-    })
-    newUser.save().then(result => {
-      res.status(201).json({
-        message: 'User created',
-        createdUser: result
-      })
-    }).catch(err => {
-      res.status(500).json({
-        message: 'Signup failed',
-        error: err
-      })
-    })
   })
 })
 
@@ -161,7 +169,7 @@ router.post('/login', (req, res) => {
 })
 
 /*
- update user infos
+ update user data
  PATCH /api/users/update/username
  HEADER Authorization-> token: String
   {

@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const router = express.Router()
 
 const options = '_id content user date'
+const limit = 5
 
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({extended: true}))
@@ -27,7 +28,7 @@ const checkAuth = require('../authentication/check_auth')
  }
  */
 router.get('/', (req, res) => {
-  Tweet.find().select(options).populate('user').exec().then(docs => {
+  Tweet.find().select(options).populate('user').sort('-date').limit(limit).exec().then(docs => {
     res.status(200).json(docs)
   }).catch(err => {
     res.status(500).json({
@@ -54,7 +55,7 @@ router.get('/', (req, res) => {
  */
 router.get('/:userId', (req, res) => {
   const userId = req.params.userId
-  Tweet.find({user: {'_id': userId}}).select(options).populate('user').exec().then(docs => {
+  Tweet.find({user: {'_id': userId}}).select(options).populate('user').sort('-date').limit(limit).exec().then(docs => {
     res.status(200).json(docs)
   }).catch(err => {
     res.status(500).json({
