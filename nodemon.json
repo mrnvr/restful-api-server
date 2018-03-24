@@ -1,0 +1,6 @@
+{
+  "env": {
+    "DB_PW": "istrator",
+    "TOKEN_KEY": "private_key"
+  }
+}
