@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const checkAuth = require('../authentication/check_auth')
 
-const options = '_id username email avatar_url password'
+const options = '_id username email avatar_url'
 
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({extended: true}))
