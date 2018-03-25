@@ -27,7 +27,7 @@ const tweetSchema = new Schema(
 
 const Tweet = module.exports = mongoose.model('Tweet', tweetSchema)
 
-// send all tweets with an optional limit
+// send tweets by "page"
 module.exports.getTweets = (req, res) => {
   const tweetId = req.query.tweetId
   if (tweetId === undefined) {
