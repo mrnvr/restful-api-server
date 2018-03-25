@@ -66,6 +66,7 @@ module.exports.getTweetsByUser = (req, res) => {
       res.status(200).json(docs)
     }).catch(err => {
       res.status(500).json({
+        message: `Not tweet found from $(userId)`,
         error: err
       })
     })
@@ -76,6 +77,7 @@ module.exports.getTweetsByUser = (req, res) => {
         res.status(200).json(docs)
       }).catch(err => {
         res.status(500).json({
+          message: `Not tweet found from $(userId)`,
           error: err
         })
       })
@@ -93,7 +95,7 @@ module.exports.tweet = (req, res) => {
   const tweet = new Tweet({
     _id: new mongoose.Types.ObjectId(),
     content: req.body.content,
-    user: req.body.authorId
+    user: req.userData.userId
   })
   tweet.save().then(result => {
     res.status(201).json({
@@ -110,14 +112,23 @@ module.exports.tweet = (req, res) => {
 // delete tweet
 module.exports.deleteTweet = (req, res) => {
   const tweetId = req.body.tweetId
-  Tweet.remove({_id: tweetId}).exec().then(result => {
-    res.status(200).json({
-      message: 'Tweet successfully deleted',
-      moreInfo: result
-    })
-  }).catch(err => {
-    res.status(500).json({
-      error: err
-    })
+  Tweet.findOne({_id: tweetId, user: {_id: req.userData.userId}}).exec().then(result => {
+    if (result === null) {
+      res.status(500).json({
+        message: 'No tweet found'
+      })
+    } else {
+      Tweet.remove({_id: tweetId}).exec().then(result => {
+        res.status(200).json({
+          message: 'Tweet successfully deleted',
+          moreInfo: result
+        })
+      }).catch(err => {
+        res.status(500).json({
+          message: 'Could not delete the tweet',
+          error: err
+        })
+      })
+    }
   })
 }

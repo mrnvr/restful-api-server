@@ -12,16 +12,15 @@ const checkAuth = require('../authentication/check_auth')
  GET /api/tweets
  optional query string -> tweetId: send tweets with older date than this tweet
  {
-  _id: String
-  content: String
-  author:
-    {
+   date: Date
+   _id: String
+   content: String
+   author: {
       _id,
       username,
       email,
       avatar_url
-  },
-  date: Date
+   }
  }
  */
 router.get('/', Tweet.getTweets)
@@ -30,16 +29,14 @@ router.get('/', Tweet.getTweets)
  send all tweets by an user
  GET /api/tweets/(userId)
  {
-  _id: String,
-  content: String,
-  author:
-    {
+   _id: String,
+   content: String,
+   author: {
       _id,
       username,
       email,
       avatar_url
-  },
-  date: Date
+   }
  }
  */
 router.get('/:userId', Tweet.getTweetsByUser)
@@ -47,10 +44,9 @@ router.get('/:userId', Tweet.getTweetsByUser)
 /*
  create a new tweet
  POST /api/tweets
-  HEADER Authorization-> token: String
+ HEADER Authorization-> token: String -> 'bearer tokenString'
  {
   content: String
-  authorId: String
  }
  */
 router.post('/', checkAuth, Tweet.tweet)
@@ -58,7 +54,7 @@ router.post('/', checkAuth, Tweet.tweet)
 /*
  delete an existing tweet
  POST /api/tweets
- HEADER Authorization-> token: String
+ HEADER Authorization-> token: String -> 'bearer tokenString'
  {
   tweetId: String
  }
