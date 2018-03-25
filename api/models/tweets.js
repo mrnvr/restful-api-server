@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const options = '_id content user date'
+const selectOptions = '_id content user date'
 const limit = 5
 
 const tweetSchema = new Schema(
@@ -31,7 +31,7 @@ const Tweet = module.exports = mongoose.model('Tweet', tweetSchema)
 module.exports.getTweets = (req, res) => {
   const tweetId = req.query.tweetId
   if (tweetId === undefined) {
-    Tweet.find().select(options).populate('user').sort('-date').limit(limit).exec().then(docs => {
+    Tweet.find().select(selectOptions).populate('user').sort('-date').limit(limit).exec().then(docs => {
       res.status(200).json(docs)
     }).catch(err => {
       res.status(500).json({
@@ -41,7 +41,7 @@ module.exports.getTweets = (req, res) => {
   } else {
     Tweet.findById(tweetId, 'date').then(doc => {
       const date = doc.date
-      Tweet.find({date: {$lt: date}}).select(options).populate('user').sort('-date').limit(limit).exec().then(docs => {
+      Tweet.find({date: {$lt: date}}).select(selectOptions).populate('user').sort('-date').limit(limit).exec().then(docs => {
         res.status(200).json(docs)
       }).catch(err => {
         res.status(500).json({
@@ -49,7 +49,7 @@ module.exports.getTweets = (req, res) => {
         })
       })
     }).catch(err => {
-      return res.status(500).json({
+      res.status(500).json({
         message: 'Not a valid id',
         error: err
       })
@@ -60,13 +60,32 @@ module.exports.getTweets = (req, res) => {
 // send tweets by a given user
 module.exports.getTweetsByUser = (req, res) => {
   const userId = req.params.userId
-  Tweet.find({user: {'_id': userId}}).select(options).populate('user').sort('-date').limit(limit).exec().then(docs => {
-    res.status(200).json(docs)
-  }).catch(err => {
-    res.status(500).json({
-      error: err
+  const tweetId = req.query.tweetId
+  if (tweetId === undefined) {
+    Tweet.find({user: {'_id': userId}}).select(selectOptions).populate('user').sort('-date').limit(limit).exec().then(docs => {
+      res.status(200).json(docs)
+    }).catch(err => {
+      res.status(500).json({
+        error: err
+      })
     })
-  })
+  } else {
+    Tweet.findById(tweetId, 'date').then(doc => {
+      const date = doc.date
+      Tweet.find({user: {'_id': userId}, date: {$lt: date}}).select(selectOptions).populate('user').sort('-date').limit(limit).exec().then(docs => {
+        res.status(200).json(docs)
+      }).catch(err => {
+        res.status(500).json({
+          error: err
+        })
+      })
+    }).catch(err => {
+      res.status(500).json({
+        message: 'Not a valid id',
+        error: err
+      })
+    })
+  }
 }
 
 // new tweet
