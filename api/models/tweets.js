@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const selectOptions = '_id content user date'
-const limit = 5
+const limit = 2
 
 const tweetSchema = new Schema(
   {
