@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*') // give access to any client
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie')
   res.header('Access-Control-Allow-Credentials', 'false')
   if (req.method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, PATCH')
@@ -42,7 +42,7 @@ app.all('/', (req, res) => {
 
 // error if route is not found
 app.use((req, res, next) => {
-  const err = new Error('Not found')
+  const err = new Error('Page Not found')
   err.status = 404
   next(err)
 })

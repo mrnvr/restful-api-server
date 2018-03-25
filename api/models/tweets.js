@@ -66,7 +66,7 @@ module.exports.getTweetsByUser = (req, res) => {
       res.status(200).json(docs)
     }).catch(err => {
       res.status(500).json({
-        message: `Not tweet found from $(userId)`,
+        message: 'No tweet found',
         error: err
       })
     })
