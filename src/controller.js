@@ -36,23 +36,16 @@ mongoose.connect('mongodb://admin:' + process.env.DB_PW + '@ds111279.mlab.com:11
 app.use('/api/tweets', tweetRoutes)
 app.use('/api/users', userRoutes)
 
+// home page
 app.all('/', (req, res) => {
   res.send('Hello World!')
 })
 
 // error if route is not found
-app.use((req, res, next) => {
-  const err = new Error('Page Not found')
-  err.status = 404
-  next(err)
-})
-
-// catch errors from everywhere
-app.use((error, req, res) => {
-  res.status(error.status || 500)
-  res.json({
+app.use('/*', (req, res) => {
+  res.status(404).json({
     error: {
-      message: error.message
+      error: 'Page Not found'
     }
   })
 })
