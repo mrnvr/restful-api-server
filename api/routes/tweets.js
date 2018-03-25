@@ -28,6 +28,7 @@ router.get('/', Tweet.getTweets)
 /*
  send all tweets by an user
  GET /api/tweets/(userId)
+ optional query string -> tweetId: send tweets with older date than this tweet
  {
    _id: String,
    content: String,
