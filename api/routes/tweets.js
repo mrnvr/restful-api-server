@@ -45,7 +45,6 @@ router.get('/:userId', Tweet.getTweetsByUser)
 /*
  create a new tweet
  POST /api/tweets
- HEADER Authorization-> token: String -> 'bearer tokenString'
  {
   content: String
  }
@@ -55,7 +54,6 @@ router.post('/', checkAuth, Tweet.tweet)
 /*
  delete an existing tweet
  POST /api/tweets
- HEADER Authorization-> token: String -> 'bearer tokenString'
  {
   tweetId: String
  }

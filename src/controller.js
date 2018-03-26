@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
 const app = express()
 
@@ -10,10 +11,11 @@ const userRoutes = require('../api/routes/users')
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
+app.use(cookieParser())
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*') // give access to any client
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   res.header('Access-Control-Allow-Credentials', 'false')
   if (req.method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, PATCH')
@@ -37,15 +39,15 @@ app.use('/api/tweets', tweetRoutes)
 app.use('/api/users', userRoutes)
 
 // home page
-app.all('/', (req, res) => {
-  res.send('Hello World!')
+app.get('/', (req, res) => {
+  res.send('Hello World\n')
 })
 
 // error if route is not found
-app.use('/*', (req, res) => {
+app.use((req, res) => {
   res.status(404).json({
     error: {
-      error: 'Page Not found'
+      message: 'Page Not Found'
     }
   })
 })

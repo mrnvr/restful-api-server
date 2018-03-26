@@ -61,13 +61,13 @@ router.post('/signup', User.addUser)
   email: String
   password: String
  }
+ send back a cookie to identify the user
  */
 router.post('/login', User.login)
 
 /*
  update user data
  PATCH /api/users/update/username
- HEADER Authorization-> token: String -> 'bearer tokenString'
   {
     fieldName: new value,
     ...
@@ -79,7 +79,6 @@ router.patch('/update', checkAuth, User.updateInfos)
 /*
  delete user
  DELETE /api/users/delete
- HEADER Authorization-> token: String
  {
   userId: String
  }

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const options = '_id username email avatar_url'
+const cookieName = 'access_token'
 
 const userSchema = new Schema(
   {
@@ -176,13 +177,10 @@ module.exports.login = (req, res) => {
           username: user.username,
           email: user.email,
           avatar_url: user.avatar_url
-        }, process.env.TOKEN_KEY,
-        {
-          expiresIn: '1h'
-        })
+        }, process.env.TOKEN_KEY)
+        res.cookie(cookieName, token, { maxAge: 300000, httpOnly: true }) // secure: true for https /* 5min */
         return res.status(200).json({
-          message: 'Authentication succeeded',
-          token: token
+          message: 'Authentication succeeded'
         })
       }
       return res.status(401).json({
