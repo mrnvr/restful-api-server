@@ -65,7 +65,10 @@ router.post('/signup', User.addUser)
  }
  send back a cookie to identify the user
  */
-router.post('/login', User.login)
+router.post('/login', (req, res) => {
+  // res.cookie(cookieName, {token: token}, { maxAge: 300000, httpOnly: true, secure: true }).send()  /* 5min */
+  res.cookie('cookieName', 'cookieValue').send()
+})
 
 /*
  update user data
