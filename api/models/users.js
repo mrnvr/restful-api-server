@@ -164,6 +164,7 @@ module.exports.deleteUser = (req, res) => {
 
 // log in
 module.exports.login = (req, res) => {
+  console.log(req)
   User.findOne({email: req.body.email}).select('+password').exec().then(user => {
     bcrypt.compare(req.body.password, user.password, (err, result) => {
       if (err) {
@@ -175,7 +176,8 @@ module.exports.login = (req, res) => {
         const token = jwt.sign({
           userId: user._id
         }, process.env.TOKEN_KEY)
-        res.cookie(cookieName, token, { maxAge: 300000, httpOnly: true, secure: true, domain: 'https://safe-journey-69409.herokuapp.com' }).send() /* 5min */
+        res.cookie(cookieName, token, {httpOnly: true, secure: true, domain: 'safe-journey-69409.herokuapp.com'}) /* 5min */
+        return res.send(cookieName)
         /*
         res.status(200).json({
           message: 'Authentication succeeded'
