@@ -143,8 +143,8 @@ module.exports.updateInfos = (req, res) => {
 
 // delete user
 module.exports.deleteUser = (req, res) => {
-  if (req.userData.userId === req.body.userId) {
-    const userId = req.body.userId
+  const userId = req.params.userId
+  if (req.userData.userId === userId) {
     User.remove({_id: userId}).exec().then(result => {
       res.status(200).json({
         message: 'User deleted'
@@ -178,11 +178,6 @@ module.exports.login = (req, res) => {
         }, process.env.TOKEN_KEY)
         res.cookie(cookieName, token, {maxAge: 300000, httpOnly: true, secure: true, domain: 'safe-journey-69409.herokuapp.com'}) /* 5min */
         return res.send(user._id)
-        /*
-        res.status(200).json({
-          message: 'Authentication succeeded'
-        })
-        */
       }
       return res.status(401).json({
         message: 'Authentication failed'

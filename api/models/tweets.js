@@ -76,8 +76,8 @@ module.exports.getTweetsByUser = (req, res) => {
       Tweet.find({user: {'_id': userId}, date: {$lt: date}}).select(selectOptions).populate('user').sort('-date').limit(limit).exec().then(docs => {
         res.status(200).json(docs)
       }).catch(err => {
-        res.status(500).json({
-          message: `Not tweet found from $(userId)`,
+        res.status(204).json({
+          message: 'Not tweet found',
           error: err
         })
       })
@@ -111,10 +111,11 @@ module.exports.tweet = (req, res) => {
 
 // delete tweet
 module.exports.deleteTweet = (req, res) => {
-  const tweetId = req.body.tweetId
-  Tweet.findOne({_id: tweetId, user: {_id: req.userData.userId}}).exec().then(result => {
+  const tweetId = req.params.tweetId
+  const userId = req.userData.userId
+  Tweet.findOne({_id: tweetId, user: {_id: userId}}).exec().then(result => {
     if (result === null) {
-      res.status(500).json({
+      res.status(204).json({
         message: 'No tweet found'
       })
     } else {

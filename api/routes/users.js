@@ -85,6 +85,6 @@ router.patch('/update', checkAuth, User.updateInfos)
   userId: String
  }
  */
-router.delete('/delete', checkAuth, User.deleteUser)
+router.delete('/delete/:userId', checkAuth, User.deleteUser)
 
 module.exports = router

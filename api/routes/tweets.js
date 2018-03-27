@@ -53,11 +53,8 @@ router.post('/', checkAuth, Tweet.tweet)
 
 /*
  delete an existing tweet
- POST /api/tweets
- {
-  tweetId: String
- }
+ POST /api/tweets/delete/(tweetId)
  */
-router.delete('/', checkAuth, Tweet.deleteTweet)
+router.delete('/delete/:tweetId', checkAuth, Tweet.deleteTweet)
 
 module.exports = router
