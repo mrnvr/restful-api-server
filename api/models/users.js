@@ -49,8 +49,14 @@ module.exports.getUsers = (req, res) => {
 // get user by id
 module.exports.getUserById = (req, res) => {
   const userId = req.params.userId
-  User.findOne({'_id': userId}).exec().then(docs => {
-    res.status(200).json(docs)
+  User.findOne({'_id': userId}).exec().then(user => {
+    if (user) {
+      return res.status(204).json({
+        message: 'No user matching the id'
+      })
+    } else {
+      res.status(200).json(user)
+    }
   }).catch(err => {
     res.status(500).json({
       message: 'Could not find user',
