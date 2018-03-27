@@ -67,7 +67,7 @@ router.post('/signup', User.addUser)
  */
 router.post('/login', (req, res) => {
   // res.cookie(cookieName, {token: token}, { maxAge: 300000, httpOnly: true, secure: true }).send()  /* 5min */
-  res.cookie('cookieName', 'cookieValue').send()
+  res.cookie('cookieName', 'cookieValue', {maxAge: 300000}).send()
 })
 
 /*

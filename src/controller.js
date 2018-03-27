@@ -15,7 +15,7 @@ app.use(cookieParser())
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://aws-app.herokuapp.com') // give access to any client
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, X-Auth-Token')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, X-Auth-Token, Set-Cookie, Cookie')
   res.header('Access-Control-Allow-Credentials', 'true')
   if (req.method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, PATCH')
