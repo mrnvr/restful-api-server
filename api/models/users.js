@@ -165,7 +165,6 @@ module.exports.deleteUser = (req, res) => {
 // log in
 module.exports.login = (req, res) => {
   console.log(req)
-  req.clearCookie('cookieName')
   User.findOne({email: req.body.email}).select('+password').exec().then(user => {
     bcrypt.compare(req.body.password, user.password, (err, result) => {
       if (err) {
