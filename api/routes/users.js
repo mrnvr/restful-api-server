@@ -1,8 +1,10 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const router = express.Router()
 const checkAuth = require('../authentication/check_auth')
 
+router.use(cookieParser())
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({extended: true}))
 const User = require('../models/users')
