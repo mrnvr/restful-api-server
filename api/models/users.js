@@ -49,7 +49,7 @@ module.exports.getUsers = (req, res) => {
 // get user by id
 module.exports.getUserById = (req, res) => {
   const userId = req.params.userId
-  User.find({'_id': userId}).exec().then(docs => {
+  User.findOne({'_id': userId}).exec().then(docs => {
     res.status(200).json(docs)
   }).catch(err => {
     res.status(500).json({
