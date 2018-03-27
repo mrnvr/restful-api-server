@@ -173,10 +173,7 @@ module.exports.login = (req, res) => {
       }
       if (result) {
         const token = jwt.sign({
-          userId: user._id,
-          username: user.username,
-          email: user.email,
-          avatar_url: user.avatar_url
+          userId: user._id
         }, process.env.TOKEN_KEY)
         res.cookie(cookieName, token, { maxAge: 300000, httpOnly: true }) // secure: true for https /* 5min */
         return res.status(200).json({
