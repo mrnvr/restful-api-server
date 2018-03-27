@@ -67,7 +67,7 @@ router.post('/signup', User.addUser)
  */
 router.post('/login', (req, res) => {
   // res.cookie(cookieName, {token: token}, { maxAge: 300000, httpOnly: true, secure: true }).send()  /* 5min */
-  res.cookie('cookieName', 'cookieValue', {maxAge: 300000}).send()
+  res.cookie('cookieName', {success: true, message: 'cookieValue'}, {maxAge: 300000, domain: 'https://safe-journey-69409.herokuapp.com', secure: true})
 })
 
 /*
