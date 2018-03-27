@@ -175,10 +175,12 @@ module.exports.login = (req, res) => {
         const token = jwt.sign({
           userId: user._id
         }, process.env.TOKEN_KEY)
-        res.cookie(cookieName, token, { maxAge: 300000, httpOnly: true }) // secure: true for https /* 5min */
+        return res.cookie(cookieName, token, { maxAge: 300000, httpOnly: true, secure: true }) // secure: true for https /* 5min */
+        /*
         return res.status(200).json({
           message: 'Authentication succeeded'
         })
+        */
       }
       return res.status(401).json({
         message: 'Authentication failed'
