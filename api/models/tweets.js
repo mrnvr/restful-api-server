@@ -114,7 +114,7 @@ module.exports.deleteTweet = (req, res) => {
   const tweetId = req.params.tweetId
   const userId = req.userData.userId
   Tweet.findOne({_id: tweetId, user: {_id: userId}}).exec().then(result => {
-    if (result === null) {
+    if (!result) {
       res.status(204).json({
         message: 'No tweet found'
       })

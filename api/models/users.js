@@ -50,7 +50,7 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
   const userId = req.params.userId
   User.findOne({'_id': userId}).exec().then(user => {
-    if (user) {
+    if (!user) {
       return res.status(204).json({
         message: 'No user matching the id'
       })
@@ -69,7 +69,7 @@ module.exports.getUserById = (req, res) => {
 module.exports.getUserByName = (req, res) => {
   const username = req.params.username
   User.find({'username': new RegExp(username)}).exec().then(docs => {
-    if (docs) res.status(200).json(docs)
+    if (docs.length > 0) res.status(200).json(docs)
     else {
       res.status(204).json({
         message: 'No data found'
@@ -173,25 +173,36 @@ module.exports.deleteUser = (req, res) => {
 module.exports.login = (req, res) => {
   console.log(req)
   User.findOne({email: req.body.email}).select('+password').exec().then(user => {
-    bcrypt.compare(req.body.password, user.password, (err, result) => {
-      if (err) {
+    if (!user) {
+      return res.status(401).json({
+        message: 'No user matching the id'
+      })
+    } else {
+      bcrypt.compare(req.body.password, user.password, (err, result) => {
+        if (err) {
+          return res.status(401).json({
+            message: 'Authentication failed. Wrong password'
+          })
+        }
+        if (result) {
+          const token = jwt.sign({
+            userId: user._id
+          }, process.env.TOKEN_KEY)
+          res.cookie(cookieName, token, {
+            maxAge: 300000, /* 5min */
+            httpOnly: true,
+            secure: true,
+            domain: 'safe-journey-69409.herokuapp.com'
+          })
+          return res.status(200).send(user._id)
+        }
         return res.status(401).json({
           message: 'Authentication failed'
         })
-      }
-      if (result) {
-        const token = jwt.sign({
-          userId: user._id
-        }, process.env.TOKEN_KEY)
-        res.cookie(cookieName, token, {maxAge: 300000, httpOnly: true, secure: true, domain: 'safe-journey-69409.herokuapp.com'}) /* 5min */
-        return res.send(user._id)
-      }
-      return res.status(401).json({
-        message: 'Authentication failed'
       })
-    })
+    }
   }).catch(err => {
-    res.status(500).json({
+    res.status(401).json({
       message: 'Authentication failed',
       error: err
     })
