@@ -172,8 +172,8 @@ module.exports.deleteUser = (req, res) => {
 module.exports.login = (req, res) => {
   console.log(req)
   User.findOne({email: req.body.email}).select('+password').exec().then(user => {
-    if (user) {
-      return res.status(204).json({
+    if (!user) {
+      return res.status(401).json({
         message: 'No user matching the id'
       })
     } else {
@@ -193,7 +193,7 @@ module.exports.login = (req, res) => {
             secure: true,
             domain: 'safe-journey-69409.herokuapp.com'
           })
-          return res.send(user._id)
+          return res.status(200).send(user._id)
         }
         return res.status(401).json({
           message: 'Authentication failed'
@@ -201,7 +201,7 @@ module.exports.login = (req, res) => {
       })
     }
   }).catch(err => {
-    res.status(500).json({
+    res.status(401).json({
       message: 'Authentication failed',
       error: err
     })
