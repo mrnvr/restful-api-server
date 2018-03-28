@@ -149,23 +149,17 @@ module.exports.updateInfos = (req, res) => {
 
 // delete user
 module.exports.deleteUser = (req, res) => {
-  const userId = req.params.userId
-  if (req.userData.userId === userId) {
-    User.remove({_id: userId}).exec().then(result => {
-      res.status(200).json({
-        message: 'User deleted'
-      })
-    }).catch(err => {
-      res.status(500).json({
-        message: 'Could not delete user',
-        error: err
-      })
+  const userId = req.userData.userId
+  User.remove({_id: userId}).exec().then(result => {
+    res.status(200).json({
+      message: 'User deleted'
     })
-  } else {
-    res.status(403).json({
-      message: 'No permission for that action'
+  }).catch(err => {
+    res.status(500).json({
+      message: 'Could not delete user',
+      error: err
     })
-  }
+  })
 }
 
 // log in
@@ -173,8 +167,8 @@ module.exports.login = (req, res) => {
   console.log(req)
   User.findOne({email: req.body.email}).select('+password').exec().then(user => {
     if (!user) {
-      return res.status(401).json({
-        message: 'No user matching the id'
+      return res.status(401).json({ // 204
+        message: 'No user matching the email'
       })
     } else {
       bcrypt.compare(req.body.password, user.password, (err, result) => {
@@ -188,7 +182,6 @@ module.exports.login = (req, res) => {
             userId: user._id
           }, process.env.TOKEN_KEY)
           res.cookie(cookieName, token, {
-            maxAge: 300000, /* 5min */
             httpOnly: true,
             secure: true,
             domain: 'safe-journey-69409.herokuapp.com'
