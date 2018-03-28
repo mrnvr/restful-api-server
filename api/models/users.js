@@ -38,7 +38,13 @@ let User = module.exports = mongoose.model('User', userSchema)
 // send id corresponding to the cookie
 module.exports.getUser = (req, res) => {
   const userId = req.userData.userId
-  res.status(200).send(userId)
+  if (userId) {
+    res.status(200).send(userId)
+  } else {
+    res.status(404).json({
+      message: 'No cookie'
+    })
+  }
 }
 
 // get user by id

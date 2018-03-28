@@ -10,13 +10,10 @@ router.use(bodyParser.urlencoded({extended: true}))
 const User = require('../models/users')
 
 /*
- send all users
+ send user id matching the id int the cookie (if it exists)
  GET /api/users
  {
   _id: String
-  username: String
-  email: String
-  avatar_url: String
  }
  */
 router.get('/', checkAuth, User.getUser)
