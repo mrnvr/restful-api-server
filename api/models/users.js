@@ -151,6 +151,7 @@ module.exports.updateInfos = (req, res) => {
 module.exports.deleteUser = (req, res) => {
   const userId = req.userData.userId
   User.remove({_id: userId}).exec().then(result => {
+    res.clearCookie(cookieName)
     res.status(200).json({
       message: 'User deleted'
     })
@@ -203,4 +204,5 @@ module.exports.login = (req, res) => {
 // log out -> clear session cookie
 module.exports.logout = (req, res) => {
   res.clearCookie(cookieName)
+  res.send('cookie deleted')
 }
