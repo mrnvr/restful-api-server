@@ -37,8 +37,9 @@ let User = module.exports = mongoose.model('User', userSchema)
 
 // send id corresponding to the cookie
 module.exports.getUser = (req, res) => {
-  const userId = req.cookies.usercookie
-  // res.status(200).send(userId)
+  const userId = req.cookies[cookieName].userId
+  res.status(200).send(userId)
+  /*
   User.findOne({'_id': userId}).select(options).exec().then(user => {
     if (!user) {
       return res.status(404).json({
@@ -52,12 +53,13 @@ module.exports.getUser = (req, res) => {
       error: err
     })
   })
+  */
 }
 
 // get user by id
 module.exports.getUserById = (req, res) => {
   const userId = req.params.userId
-  User.findOne({'_id': userId}).exec().then(user => {
+  User.findOne({'_id': userId}).select(options).exec().then(user => {
     if (!user) {
       return res.status(204).json({
         message: 'No user matching the id'

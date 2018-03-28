@@ -19,7 +19,7 @@ const User = require('../models/users')
   avatar_url: String
  }
  */
-router.get('/', User.getUser)
+router.get('/', checkAuth, User.getUser)
 
 /*
  send user matching the id
