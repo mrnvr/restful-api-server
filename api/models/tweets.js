@@ -98,6 +98,7 @@ module.exports.tweet = (req, res) => {
     user: req.userData.userId
   })
   tweet.save().then(result => {
+    result.populate('user')
     res.status(201).json({
       message: 'Tweet posted',
       createdTweet: result
