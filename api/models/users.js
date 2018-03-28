@@ -35,10 +35,17 @@ const userSchema = new Schema(
 
 let User = module.exports = mongoose.model('User', userSchema)
 
-// get all users
-module.exports.getUsers = (req, res) => {
-  User.find().select(options).exec().then(docs => {
-    res.status(200).json(docs)
+// send id corresponding to the cookie
+module.exports.getUser = (req, res) => {
+  const userId = req.cookies[cookieName]
+  User.findOne({'_id': userId}).select(options).exec().then(user => {
+    if (!user) {
+      return res.status(404).json({
+        message: 'No cookie'
+      })
+    } else {
+      res.status(200).json(user._id)
+    }
   }).catch(err => {
     res.status(500).json({
       error: err
@@ -184,7 +191,7 @@ module.exports.login = (req, res) => {
           res.cookie(cookieName, token, {
             httpOnly: true,
             secure: true,
-            domain: 'safe-journey-69409.herokuapp.com'
+            domain: 'https://safe-journey-69409.herokuapp.com'
           })
           return res.status(200).send(user._id)
         }

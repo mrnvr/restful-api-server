@@ -19,7 +19,7 @@ const User = require('../models/users')
   avatar_url: String
  }
  */
-router.get('/', User.getUsers)
+router.get('/', User.getUser)
 
 /*
  send user matching the id
@@ -69,7 +69,7 @@ router.post('/login', User.login)
 
 /*
  update user data
- PATCH /api/users/update/username
+ PATCH /api/users/update
   {
     fieldName: new value,
     ...
