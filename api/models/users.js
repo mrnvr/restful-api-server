@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-
+const gravatar = require('gravatar')
 const options = '_id username email avatar_url'
 const cookieName = 'usercookie'
 
@@ -107,7 +107,8 @@ module.exports.addUser = (req, res) => {
           _id: new mongoose.Types.ObjectId(),
           username: req.body.username,
           email: req.body.email,
-          password: hash
+          password: hash,
+          avatar_url : gravatar.url(req.body.email,{s:'100',r: 'x', d: 'identicon'},true)
         })
         newUser.save().then(result => {
           res.status(201).json({
