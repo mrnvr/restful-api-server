@@ -62,7 +62,7 @@ module.exports.getTweetsByUser = (req, res) => {
   const userId = req.params.userId
   const tweetId = req.query.tweetId
   if (tweetId === undefined) {
-    Tweet.find({user: {'_id': userId}}).select(selectOptions).populate('user').sort('-date').limit(limit).exec().then(docs => {
+    Tweet.find({user: {_id: userId}}).select(selectOptions).populate('user').sort('-date').limit(limit).exec().then(docs => {
       res.status(200).json(docs)
     }).catch(err => {
       res.status(500).json({

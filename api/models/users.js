@@ -2,7 +2,9 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const Tweet = require('./tweets')
 // const gravatar = require('gravatar')
+
 const options = '_id username email avatar_url'
 const cookieName = 'usercookie'
 
@@ -150,6 +152,16 @@ module.exports.updateInfos = (req, res) => {
 // delete user
 module.exports.deleteUser = (req, res) => {
   const userId = req.userData.userId
+  User.findOne({username: 'Deleted User'}).exec().then(doc => {
+    Tweet.find({user: {_id: userId}}).exec().then(docs => {
+      docs.user = doc
+    })
+  }).catch(err => {
+    res.status(500).json({
+      message: 'Could not delete tweet',
+      error: err
+    })
+  })
   User.remove({_id: userId}).exec().then(result => {
     res.clearCookie(cookieName)
     res.status(200).json({
