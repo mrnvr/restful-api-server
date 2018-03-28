@@ -89,7 +89,7 @@ module.exports.getUserByName = (req, res) => {
 module.exports.addUser = (req, res) => {
   User.findOne({email: req.body.email}).exec().then(user => {
     if (user) {
-      return res.status(409).json({
+      res.status(409).json({
         message: 'Email already used. User creation aborted'
       })
     } else {
@@ -152,18 +152,26 @@ module.exports.updateInfos = (req, res) => {
 // delete user
 module.exports.deleteUser = (req, res) => {
   const userId = req.userData.userId
-  User.findOne({username: 'Deleted User'}).exec().then(doc => {
-    Tweet.find({user: {_id: userId}}).exec().then(docs => {
-      docs.user = doc
-    })
-  }).catch(err => {
-    res.status(500).json({
-      message: 'Could not delete tweet',
-      error: err
-    })
-  })
   User.remove({_id: userId}).exec().then(result => {
-    res.clearCookie(cookieName)
+    User.findOne({username: 'Deleted User'}).exec().then(doc => {
+      const update = {user: {_id: doc._id}}
+      Tweet.update({user: {_id: userId}}, {$set: update}, {multi: true}).exec().then(result => {}).catch(err => {
+        res.status(500).json({
+          error: err
+        })
+      })
+    }).catch(err => {
+      res.status(500).json({
+        message: 'Could not link tweet',
+        error: err
+      })
+    })
+    res.clearCookie(cookieName, {
+      path: '/',
+      httpOnly: true,
+      secure: true,
+      domain: 'safe-journey-69409.herokuapp.com'
+    })
     res.status(200).json({
       message: 'User deleted'
     })
@@ -215,6 +223,10 @@ module.exports.login = (req, res) => {
 
 // log out -> clear session cookie
 module.exports.logout = (req, res) => {
-  res.clearCookie(cookieName)
-  res.send('cookie deleted')
+  res.clearCookie(cookieName, {
+    path: '/',
+    httpOnly: true,
+    secure: true,
+    domain: 'safe-journey-69409.herokuapp.com'
+  }).send()
 }
