@@ -84,4 +84,6 @@ router.patch('/update', checkAuth, User.updateInfos)
  */
 router.delete('/', checkAuth, User.deleteUser)
 
+router.post('/logout', checkAuth, User.logout)
+
 module.exports = router

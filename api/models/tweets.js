@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const selectOptions = '_id content user date'
-const cookieName = 'usercookie'
 const limit = 3
 
 const tweetSchema = new Schema(
@@ -139,8 +138,4 @@ module.exports.deleteTweet = (req, res) => {
       })
     }
   })
-}
-
-module.exports.logout = (req, res) => {
-  res.clearCookie(cookieName)
 }

@@ -57,6 +57,4 @@ router.post('/', checkAuth, Tweet.tweet)
  */
 router.delete('/:tweetId', checkAuth, Tweet.deleteTweet)
 
-router.post('/logout', checkAuth, Tweet.logout)
-
 module.exports = router

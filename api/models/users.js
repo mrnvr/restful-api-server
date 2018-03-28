@@ -199,3 +199,8 @@ module.exports.login = (req, res) => {
     })
   })
 }
+
+// log out -> clear session cookie
+module.exports.logout = (req, res) => {
+  res.clearCookie(cookieName)
+}
