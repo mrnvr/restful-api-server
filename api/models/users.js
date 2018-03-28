@@ -39,21 +39,6 @@ let User = module.exports = mongoose.model('User', userSchema)
 module.exports.getUser = (req, res) => {
   const userId = req.userData.userId
   res.status(200).send(userId)
-  /*
-  User.findOne({'_id': userId}).select(options).exec().then(user => {
-    if (!user) {
-      return res.status(404).json({
-        message: 'No cookie'
-      })
-    } else {
-      res.status(200).send(user._id)
-    }
-  }).catch(err => {
-    res.status(500).json({
-      error: err
-    })
-  })
-  */
 }
 
 // get user by id
@@ -61,14 +46,14 @@ module.exports.getUserById = (req, res) => {
   const userId = req.params.userId
   User.findOne({'_id': userId}).select(options).exec().then(user => {
     if (!user) {
-      return res.status(204).json({
+      return res.status(404).json({
         message: 'No user matching the id'
       })
     } else {
       res.status(200).json(user)
     }
   }).catch(err => {
-    res.status(500).json({
+    res.status(404).json({
       message: 'Could not find user',
       error: err
     })
@@ -86,8 +71,7 @@ module.exports.getUserByName = (req, res) => {
       })
     }
   }).catch(err => {
-    res.status(500).json({
-      message: 'Could not find user',
+    res.status(404).json({
       error: err
     })
   })
@@ -102,7 +86,7 @@ module.exports.addUser = (req, res) => {
       })
     } else {
       if (req.body.password.length === 0) {
-        return res.status(500).json({
+        return res.status(400).json({
           message: 'No password entered. User creation aborted'
         })
       }
@@ -174,7 +158,6 @@ module.exports.deleteUser = (req, res) => {
 
 // log in
 module.exports.login = (req, res) => {
-  console.log(req)
   User.findOne({email: req.body.email}).select('+password').exec().then(user => {
     if (!user) {
       return res.status(401).json({ // 204
