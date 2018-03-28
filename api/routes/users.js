@@ -19,7 +19,7 @@ const User = require('../models/users')
   avatar_url: String
  }
  */
-router.get('/', User.getUsers)
+router.get('/', checkAuth, User.getUser)
 
 /*
  send user matching the id
@@ -69,7 +69,7 @@ router.post('/login', User.login)
 
 /*
  update user data
- PATCH /api/users/update/username
+ PATCH /api/users/update
   {
     fieldName: new value,
     ...
@@ -85,6 +85,6 @@ router.patch('/update', checkAuth, User.updateInfos)
   userId: String
  }
  */
-router.delete('/delete/:userId', checkAuth, User.deleteUser)
+router.delete('/:userId', checkAuth, User.deleteUser)
 
 module.exports = router

@@ -35,30 +35,25 @@ const userSchema = new Schema(
 
 let User = module.exports = mongoose.model('User', userSchema)
 
-// get all users
-module.exports.getUsers = (req, res) => {
-  User.find().select(options).exec().then(docs => {
-    res.status(200).json(docs)
-  }).catch(err => {
-    res.status(500).json({
-      error: err
-    })
-  })
+// send id corresponding to the cookie
+module.exports.getUser = (req, res) => {
+  const userId = req.userData.userId
+  res.status(200).send(userId)
 }
 
 // get user by id
 module.exports.getUserById = (req, res) => {
   const userId = req.params.userId
-  User.findOne({'_id': userId}).exec().then(user => {
+  User.findOne({'_id': userId}).select(options).exec().then(user => {
     if (!user) {
-      return res.status(204).json({
+      return res.status(404).json({
         message: 'No user matching the id'
       })
     } else {
       res.status(200).json(user)
     }
   }).catch(err => {
-    res.status(500).json({
+    res.status(404).json({
       message: 'Could not find user',
       error: err
     })
@@ -76,8 +71,7 @@ module.exports.getUserByName = (req, res) => {
       })
     }
   }).catch(err => {
-    res.status(500).json({
-      message: 'Could not find user',
+    res.status(404).json({
       error: err
     })
   })
@@ -92,7 +86,7 @@ module.exports.addUser = (req, res) => {
       })
     } else {
       if (req.body.password.length === 0) {
-        return res.status(500).json({
+        return res.status(400).json({
           message: 'No password entered. User creation aborted'
         })
       }
@@ -150,32 +144,25 @@ module.exports.updateInfos = (req, res) => {
 
 // delete user
 module.exports.deleteUser = (req, res) => {
-  const userId = req.params.userId
-  if (req.userData.userId === userId) {
-    User.remove({_id: userId}).exec().then(result => {
-      res.status(200).json({
-        message: 'User deleted'
-      })
-    }).catch(err => {
-      res.status(500).json({
-        message: 'Could not delete user',
-        error: err
-      })
+  const userId = req.userData.userId
+  User.remove({_id: userId}).exec().then(result => {
+    res.status(200).json({
+      message: 'User deleted'
     })
-  } else {
-    res.status(403).json({
-      message: 'No permission for that action'
+  }).catch(err => {
+    res.status(500).json({
+      message: 'Could not delete user',
+      error: err
     })
-  }
+  })
 }
 
 // log in
 module.exports.login = (req, res) => {
-  console.log(req)
   User.findOne({email: req.body.email}).select('+password').exec().then(user => {
     if (!user) {
-      return res.status(401).json({
-        message: 'No user matching the id'
+      return res.status(401).json({ // 204
+        message: 'No user matching the email'
       })
     } else {
       bcrypt.compare(req.body.password, user.password, (err, result) => {
@@ -189,10 +176,9 @@ module.exports.login = (req, res) => {
             userId: user._id
           }, process.env.TOKEN_KEY)
           res.cookie(cookieName, token, {
-            maxAge: 300000, /* 5min */
             httpOnly: true,
             secure: true,
-            domain: 'safe-journey-69409.herokuapp.com'
+            domain: 'https://safe-journey-69409.herokuapp.com'
           })
           return res.status(200).send(user._id)
         }
