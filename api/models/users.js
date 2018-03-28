@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const gravatar = require('gravatar')
+// const gravatar = require('gravatar')
 const options = '_id username email avatar_url'
 const cookieName = 'usercookie'
 
@@ -107,8 +107,7 @@ module.exports.addUser = (req, res) => {
           _id: new mongoose.Types.ObjectId(),
           username: req.body.username,
           email: req.body.email,
-          password: hash,
-          avatar_url : gravatar.url(req.body.email,{s:'100',r: 'x', d: 'identicon'},true)
+          password: hash
         })
         newUser.save().then(result => {
           res.status(201).json({
@@ -184,7 +183,7 @@ module.exports.login = (req, res) => {
           res.cookie(cookieName, token, {
             httpOnly: true,
             secure: true,
-            domain: 'https://safe-journey-69409.herokuapp.com'
+            domain: 'safe-journey-69409.herokuapp.com'
           })
           return res.status(200).send(user._id)
         }
