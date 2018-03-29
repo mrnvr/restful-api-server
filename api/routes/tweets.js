@@ -26,6 +26,24 @@ const checkAuth = require('../authentication/check_auth')
 router.get('/', Tweet.getTweets)
 
 /*
+send all tweets in the DB
+GET /api/tweets/newTweets
+optional query string -> tweetId: send tweets with newer date than this tweet
+{
+  date: Date
+  _id: String
+  content: String
+  author: {
+    _id,
+    username,
+    email,
+    avatar_url
+  }
+}
+*/
+router.get('/newTweets', Tweet.getRecentTweets)
+
+/*
  send all tweets by an user
  GET /api/tweets/(userId)
  optional query string -> tweetId: send tweets with older date than this tweet

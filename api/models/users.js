@@ -25,7 +25,7 @@ const userSchema = new Schema(
     },
     avatar_url: {
       type: String,
-      default: 'https://www.shareicon.net/data/128x128/2016/09/02/824411_man_512x512.png'
+      required: true
     },
     password: {
       type: String,

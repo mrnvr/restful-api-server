@@ -58,6 +58,30 @@ module.exports.getTweets = (req, res) => {
   }
 }
 
+// send newer tweets from tweet by id
+module.exports.getRecentTweets = (req, res) => {
+  const tweetId = req.query.tweetId
+  if (tweetId === undefined) {
+    res.status(404).send()
+  } else {
+    Tweet.findById(tweetId, 'date').then(doc => {
+      const date = doc.date
+      Tweet.find({date: {$gt: date}}).select(selectOptions).populate('user').sort('-date').exec().then(docs => {
+        res.status(200).json(docs)
+      }).catch(err => {
+        res.status(500).json({
+          error: err
+        })
+      })
+    }).catch(err => {
+      res.status(404).json({
+        message: 'Not a valid id',
+        error: err
+      })
+    })
+  }
+}
+
 // send tweets by a given user
 module.exports.getTweetsByUser = (req, res) => {
   const userId = req.params.userId
